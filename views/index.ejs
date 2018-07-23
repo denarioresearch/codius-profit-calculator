@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<% include ./partials/head.ejs %>
+		<script type="text/javascript" src="/js/wallet-address-validator.min.js"></script>
+		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.js"></script>
+		<script type="text/javascript" src="/js/addrForm.js"></script>
+		
+	</head>
+	<body>
+		<header>
+			<% include ./partials/header.ejs %>
+		</header>
+		<main>
+		<div class= "container mb-4  mt-4"">
+			<form method="post" class="form" id="addrForm">
+				<div class="form-group">
+					<label for="addr">Submit XRP address</label>
+					<input class="form-control" type="text" id="addr" name="addr" required="" placeholder="rK6g2UYc4GpQH8DYdPG7wywyQbxkJpQTTN"/>
+				</div>
+				<button id="submit" type="submit" class="btn btn-primary">Submit</button> 
+			</form>
+		</div>
+		<div class="container mb-4  mt-4 d-flex justify-content-center">
+			<div style="display:none;" id="loaderDiv">
+				Loading data...
+				
+					<img src="/images/ajax-loader.gif" alt="Loading">
+				
+			</div>
+		</div>
+		<div class="d-flex justify-content-center">
+			<a amount="0.75" size="275" to="denarioresearch" network="reddit" href="https://www.xrptipbot.com" target="_blank"></a>
+			<script async src="https://www.xrptipbot.com/static/donate/tipper.js" charset="utf-8"></script>
+		</div>
+		<div class= "container mt-4">
+			<h3>30 days profit chart</h3>
+			<div id="profitByDate_chart" style="height:400px;"></div>
+		</div>
+		<!-- <div class= "container mt-4">
+			<h3>30 days profit chart</h3>
+			<div id="profitByCahnnelAndDate_chart" style="height:400px;"></div>
+		</div> -->
+		<div class= "container mt-4">
+			
+			<h3>Total profit by channel</h3>
+			<table class="table">
+				<thead class="thead-light">
+					<tr>
+						<th scope="col">Channel</th>
+						<th scope="col">Created</th>
+						<th scope="col">Profit</th>
+						<th scope="col">Largest tx</th>
+						<th scope="col">Smallest tx</th>
+					</tr>
+				</thead>
+				<tbody id="channels">
+				</tbody>
+			</table>
+			
+		</div>
+		
+		</main>
+		<footer class="footer">
+			<% include ./partials/footer.ejs %>
+	    </footer>
+		<script src='/js/analyzer.js'></script>		
+	</body>
+	
+</html>
