@@ -24,9 +24,12 @@ $("#submit").on("click", function(event){
 				$("#addr").removeAttr("disabled")
 			}
 		}).done(function(result){
-			data =result
-			addr= $("#addr").val()		
-			analyze()
+			if(result){
+				data =result
+				addr= $("#addr").val()		
+				analyze()
+			}
+			
 		}).fail(function(err){
 			console.log(err);
 		})

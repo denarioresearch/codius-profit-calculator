@@ -39,6 +39,7 @@ router.route('/submitaddr').post(function(req, res){
 
 	}else{
 		console.log('invalid address ',addr)
+		res.json(null)
 	}
 	
 	
