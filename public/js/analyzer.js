@@ -1,4 +1,8 @@
 
+let profitByChannel ={}
+let profitByDate ={}
+let data =[]
+let addr=''
 $("#submit").on("click", function(event){
 
 	
@@ -20,8 +24,9 @@ $("#submit").on("click", function(event){
 				$("#addr").removeAttr("disabled")
 			}
 		}).done(function(result){
-						
-			analyze(result, $("#addr").val())
+			data =result
+			addr= $("#addr").val()		
+			analyze()
 		}).fail(function(err){
 			console.log(err);
 		})
@@ -29,11 +34,11 @@ $("#submit").on("click", function(event){
 	
 })
 
-function analyze(data, addr){
+function analyze(){
 	let days = constructProfitDates()
-	getProfitByDate(data, addr, days)
-	//getProfitByChannelAndDate(data, addr, days)
-	getProfitByChannel(data, addr)
+	getProfitByDate(days)
+	getProfitByChannel()
+	getProfitByChannelAndDate()
 }
 
 function constructProfitDates(){
@@ -71,8 +76,8 @@ function constructProfitDates(){
 }
 
 
-function getProfitByDate(data, addr, daysArray){
-	let profitByDate ={}
+function getProfitByDate(daysArray){
+	
 	for(day of daysArray){
 		profitByDate[day]={profit:0}
 	}
@@ -95,31 +100,17 @@ function getProfitByDate(data, addr, daysArray){
 	populateProfitByDateChart(profitByDate)
 }
 
-function getProfitByChannelAndDate(data, addr, daysArray){
-	let profitByChannelAndDate ={}
-	for(day of daysArray){
-		profitByChannelAndDate[day]={}
+function getProfitByChannelAndDate(){
+	$('#channels-list').empty()
+	for(channel in profitByChannel){
+		let li = document.createElement("li")
+		li.innerHTML = '<a href="#channels-list" id="'+channel+'"onClick="prepareProfitByChannelAndDateChart(this.id)">...'+channel.slice(-5)+'</a>'
+		li.setAttribute("class", 'list-inline-item')
+		document.getElementById('channels-list').appendChild(li)
 	}
-	for (elem of data){
-		if(elem.type ==='paymentChannelClaim' && 
-			elem.outcome.result ==='tesSUCCESS' && 
-			elem.outcome.balanceChanges[addr] &&
-			daysArray.includes(elem.outcome.timestamp.split('T')[0])){
 
-			for(tx of elem.outcome.balanceChanges[addr]){
-				if(tx['currency'] === 'XRP' &&  parseFloat(tx['value']) <9){
-					let val = parseFloat(tx['value'])
-					if(!profitByChannelAndDate[elem.outcome.timestamp.split('T')[0]].hasOwnProperty(elem.outcome.channelChanges.channelId)){
-						profitByChannelAndDate[elem.outcome.timestamp.split('T')[0]][elem.outcome.channelChanges.channelId]={profit:0}
-					}
-					profitByChannelAndDate[elem.outcome.timestamp.split('T')[0]][elem.outcome.channelChanges.channelId]['profit']+=val
-				}
-			}
-			
-
-		}
-	}
-	populateProfitByChannelAndDateChart(profitByChannelAndDate)
+	prepareProfitByChannelAndDateChart(Object.keys(profitByChannel)[0])
+	
 	
 }
 
@@ -140,39 +131,58 @@ function populateProfitByDateChart(profitByDate){
           legend: { position: 'bottom' }
         };
     	var chart = new google.visualization.LineChart(document.getElementById('profitByDate_chart'));
-    	 chart.draw(data, options);
+    	chart.draw(data, options);
     });
 }
 
-function populateProfitByChannelAndDateChart(profitByChannelAndDate){
-	let chartData=[]
-	let channels=[]
-	for(elem in profitByChannelAndDate){
-		
-		for(channel in profitByChannelAndDate[elem]){
-			if(!channels.includes(channel) && profitByChannelAndDate[elem][channel]['profit'] >0){
-				channels.push(channel)
-			}
-		}
-
+function prepareProfitByChannelAndDateChart(channel){
+	let profitByChannelAndDate={}
+	let daysArray = constructProfitDates()
+	for(day of daysArray){
+		profitByChannelAndDate[day]={profit:0}
 	}
-	console.log(channels)
+	for (elem of data){
+		if(elem.type ==='paymentChannelClaim' && 
+			elem.outcome.result ==='tesSUCCESS' && 
+			elem.outcome.balanceChanges[addr] &&
+			daysArray.includes(elem.outcome.timestamp.split('T')[0]) &&
+			elem.outcome.channelChanges.channelId === channel){
+
+			for(tx of elem.outcome.balanceChanges[addr]){
+				if(tx['currency'] === 'XRP' &&  parseFloat(tx['value']) <9){
+					let val = parseFloat(tx['value'])
+					profitByChannelAndDate[elem.outcome.timestamp.split('T')[0]]['profit']+=val
+				}
+			}
+			
+
+		}
+	}
+	populateProfitByChannelAndDateChart(channel, profitByChannelAndDate)
 	
-	/*google.charts.load('current', {'packages':['corechart']});
+}
+function populateProfitByChannelAndDateChart(channel, profitByChannelAndDate){
+	let chartData=[]
+	for(key in profitByChannelAndDate){
+		chartData.push([key.slice(5), profitByChannelAndDate[key].profit])
+	}
+	chartData.push(['Date', 'channel# ...'+channel.slice(-5)])
+	chartData =chartData.reverse()
+	google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(()=>{
     	var data = google.visualization.arrayToDataTable(chartData)
     	var options = {
-          curveType: 'function',
-          height: 340,
-          legend: { position: 'bottom' }
+    		
+	    	curveType: 'function',
+	    	height: 340,
+	    	legend: { position: 'bottom' }
         };
     	var chart = new google.visualization.LineChart(document.getElementById('profitByCahnnelAndDate_chart'));
     	 chart.draw(data, options);
-    }); */
+    });
 }
-
-function getProfitByChannel(data, addr){
-	let profitByChannel ={}
+function getProfitByChannel(){
+	
 	  	for (elem of data){
 	  		if(elem.type ==='paymentChannelCreate' && elem.outcome.result ==='tesSUCCESS'){
 	  			profitByChannel[elem.outcome.channelChanges.channelId]={profit:0,
@@ -213,10 +223,10 @@ function getProfitByChannel(data, addr){
 	populateChannelsTable(profitByChannel)
 }
 
-function populateChannelsTable(data){
+function populateChannelsTable(profitByChannel){
 	var tableBody = document.getElementById('channels')
 	$("#channels tr").remove(); 
-    for(key in data){
+    for(key in profitByChannel){
     	var tr=document.createElement("tr")
     	var channeltd = document.createElement("td")
     	var timestamptd = document.createElement("td")
@@ -226,10 +236,10 @@ function populateChannelsTable(data){
 
 
     	channeltd.innerHTML = '...'+key.slice(-5)
-    	timestamptd.innerHTML =  data[key].timestamp.split('.')[0].replace('T',' ')
-    	profittd.innerHTML = data[key].profit.toFixed(6)
-    	maxtd.innerHTML = data[key].max
-    	mintd.innerHTML = data[key].min
+    	timestamptd.innerHTML =  profitByChannel[key].timestamp.split('.')[0].replace('T',' ')
+    	profittd.innerHTML = profitByChannel[key].profit.toFixed(6)
+    	maxtd.innerHTML = profitByChannel[key].max
+    	mintd.innerHTML = profitByChannel[key].min
 
     	tr.appendChild(channeltd)
     	tr.appendChild(timestamptd)
