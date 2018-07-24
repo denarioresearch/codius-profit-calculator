@@ -43,14 +43,35 @@
 			<div id="profitByDate_chart"></div>
 		</div>
 		<div class= "container mt-4">
-			<h3>30 days profit by channel chart</h3>
-			<ul id="channels-list" class="list-inline text-center"></ul>
+			<h3>30 days profit by channel</h3>
+			<ul id="chart-channels-list" class="list-inline text-center"></ul>
 			<div id="profitByCahnnelAndDate_chart" ></div>
+		</div>
+		<div class= "container mt-4">
+			<h3>Largest and smallest tx today by channel</h3>
+			<ul id="table-channels-list" class="list-inline text-center"></ul>
+			<table class="table table-bordered">
+				<caption id="tx-caption"></caption>
+				<thead class="thead-light">
+					<tr>
+						<th colspan="2" scope="colgroup">Largest tx</th>
+						<th colspan="2" scope="colgroup">Smallest tx</th>
+					</tr>
+					<tr>
+						<th scope="col">Time</th>
+						<th scope="col">Value</th>
+						<th scope="col">Time</th>
+						<th scope="col">Value</th>
+					</tr>
+				</thead>
+				<tbody id="tx-body">
+				</tbody>
+			</table>
 		</div>
 		<div class= "container mt-4">
 			
 			<h3>Total profit by channel</h3>
-			<table class="table">
+			<table class="table table-bordered">
 				<thead class="thead-light">
 					<tr>
 						<th scope="col">Channel</th>

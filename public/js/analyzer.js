@@ -42,6 +42,7 @@ function analyze(){
 	getProfitByDate(days)
 	getProfitByChannel()
 	getProfitByChannelAndDate()
+	getLargestAndSmallextTx()
 }
 
 function constructProfitDates(){
@@ -104,12 +105,12 @@ function getProfitByDate(daysArray){
 }
 
 function getProfitByChannelAndDate(){
-	$('#channels-list').empty()
+	$('#chart-channels-list').empty()
 	for(channel in profitByChannel){
 		let li = document.createElement("li")
-		li.innerHTML = '<a href="#channels-list" id="'+channel+'"onClick="prepareProfitByChannelAndDateChart(this.id)">...'+channel.slice(-5)+'</a>'
+		li.innerHTML = '<a href="#chart-channels-list" id="'+channel+'"onClick="prepareProfitByChannelAndDateChart(this.id)">...'+channel.slice(-5)+'</a>'
 		li.setAttribute("class", 'list-inline-item')
-		document.getElementById('channels-list').appendChild(li)
+		document.getElementById('chart-channels-list').appendChild(li)
 	}
 
 	prepareProfitByChannelAndDateChart(Object.keys(profitByChannel)[0])
@@ -184,6 +185,99 @@ function populateProfitByChannelAndDateChart(channel, profitByChannelAndDate){
     	 chart.draw(data, options);
     });
 }
+
+function getLargestAndSmallextTx(){
+	$('#table-channels-list').empty()
+	for(channel in profitByChannel){
+		let li = document.createElement("li")
+		li.innerHTML = '<a href="#table-channels-list" id="'+channel+'"onClick="prepareLargestAndSmallextTxTable(this.id)">...'+channel.slice(-5)+'</a>'
+		li.setAttribute("class", 'list-inline-item')
+		document.getElementById('table-channels-list').appendChild(li)
+	}
+	prepareLargestAndSmallextTxTable(Object.keys(profitByChannel)[0])
+}
+
+function prepareLargestAndSmallextTxTable(channel){
+	let d = new Date();
+	let endDay = d.getUTCDate()
+	if(endDay.toString().length ===1){
+		endDay= '0'+endDay
+	}
+	let endMonth = d.getUTCMonth() +1
+	if(endMonth.toString().length ===1){
+		endMonth= '0'+endMonth
+	}
+	let endYear = d.getUTCFullYear()
+
+	let endDate = endYear+'-'+endMonth+'-'+endDay
+
+	todayTx=[]
+	for (elem of data){
+		if(elem.type ==='paymentChannelClaim' && 
+			elem.outcome.result ==='tesSUCCESS' && 
+			elem.outcome.balanceChanges[addr] &&
+			elem.outcome.timestamp.split('T')[0] ===endDate  &&
+			elem.outcome.channelChanges.channelId === channel){
+
+			for(tx of elem.outcome.balanceChanges[addr]){
+				if(tx['currency'] === 'XRP' &&  parseFloat(tx['value']) <9){
+					todayTx.push([elem.outcome.timestamp.split('T')[1].split('.')[0], parseFloat(tx['value'])])
+					
+				}
+			}
+
+		}
+	}
+	let topLargestTx = todayTx.sort(function(a,b){
+	    return b[1] - a[1];
+	});
+	topLargestTx=topLargestTx.slice(0,5)
+
+	let topSmallestTx = todayTx.sort(function(a,b){
+	    return a[1] - b[1];
+	});
+	topSmallestTx =topSmallestTx.slice(0,5)
+	populateLargestAndSmallextTxTable(channel, topLargestTx,topSmallestTx )
+
+}
+
+function populateLargestAndSmallextTxTable(channel, topLargestTx,topSmallestTx ){
+	let tableBody = document.getElementById('tx-body')
+	$("#tx-body tr").remove(); 
+	document.getElementById('tx-caption').innerHTML='channel# ...'+channel.slice(-5)
+	if(topLargestTx.length>0 && topSmallestTx.length>0){
+		for(i=0;i<topLargestTx.length;i++){
+			var tr=document.createElement("tr")
+			var lTime = document.createElement("td")
+			var lValue = document.createElement("td")
+			var sTime = document.createElement("td")
+			var sValue = document.createElement("td")
+
+			lTime.innerHTML=topLargestTx[i][0]
+			lValue.innerHTML=topLargestTx[i][1]
+			sTime.innerHTML=topSmallestTx[i][0]
+			sValue.innerHTML=topSmallestTx[i][1]
+
+			tr.appendChild(lTime)
+	    	tr.appendChild(lValue)
+	    	tr.appendChild(sTime)
+	    	tr.appendChild(sValue)
+	    	
+	    	tableBody.appendChild(tr)
+		}
+	}else{
+		var tr=document.createElement("tr")
+		var noData = document.createElement("td")
+		noData.innerHTML='No data for this channel'
+		noData.setAttribute('colspan', 4)
+		tr.appendChild(noData)
+    	
+    	
+    	tableBody.appendChild(tr)
+	}
+
+}
+
 function getProfitByChannel(){
 	
 	  	for (elem of data){
