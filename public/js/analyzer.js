@@ -3,16 +3,17 @@ let profitByChannel ={}
 let profitByDate ={}
 let data =[]
 let addr=''
-$("#submit").on("click", function(event){
-
+$().ready(function(){
+	addr = window.location.href.split('analyze/')[1]
+	if(addr){
+		document.getElementById('addr').value=addr
 	
-	    event.preventDefault();
-		event.stopPropagation();
+	
 		$.ajax({
-			url : "/submitaddr",
-			type: "POST",
+			url : "/loaddata",
+			type: "GET",
 			contentType: "application/json",
-			data: JSON.stringify({addr: $("#addr").val()}),
+			data: {addr: addr},
 			beforeSend:function(){
 				$("#loaderDiv").show()
 				$("#submit").attr("disabled", "disabled")
@@ -25,17 +26,35 @@ $("#submit").on("click", function(event){
 			}
 		}).done(function(result){
 			if(result){
-				data =result
-				addr= $("#addr").val()		
+				data =result	
 				analyze()
 			}
-			
+				
 		}).fail(function(err){
 			console.log(err);
 		})
-	
+	}
 	
 })
+
+// $("#submit").on("click", function(event){
+// 	    event.preventDefault();
+// 		event.stopPropagation();
+// 		$.ajax({
+// 			url : "/submitaddr",
+// 			type: "POST",
+// 			contentType: "application/json",
+// 			data: JSON.stringify({addr: $("#addr").val()}),
+			
+// 		}).done(function(result){
+		
+		
+// 		}).fail(function(err){
+// 			console.log(err);
+// 		})
+	
+	
+// })
 
 function analyze(){
 	let days = constructProfitDates()

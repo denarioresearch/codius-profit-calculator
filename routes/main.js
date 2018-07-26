@@ -27,9 +27,27 @@ router.get('/', function(req, res){
 
 router.route('/submitaddr').post(function(req, res){
 	let addr =req.body.addr
+	console.log(addr)
+	return res.redirect('/analyze/'+addr)
+	
+	
+});
+
+router.route('/analyze/:addr').get((req, res)=>{
+	
+	if(validator.validate(req.params.addr,'XRP')){
+		res.render('index')
+	}else{
+		console.log('invalid address ',req.params.addr)
+		res.send('invalid XRP address')
+	}
+})
+
+router.route('/loaddata').get((req, res)=>{
+	let addr = req.query.addr
 	if(validator.validate(addr,'XRP')){
 		api.connect().then(() => {
-		  api.getTransactions(req.body.addr, {minLedgerVersion: 38988009}).then((data)=>{
+		  api.getTransactions(addr, {minLedgerVersion: 38988009}).then((data)=>{
 		  	
 			res.json(data)
 		  })
@@ -42,8 +60,9 @@ router.route('/submitaddr').post(function(req, res){
 		res.json(null)
 	}
 	
-	
-});
+})
+
+
 
 
 module.exports = router;
