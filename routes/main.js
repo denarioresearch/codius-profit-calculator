@@ -27,7 +27,6 @@ router.get('/', function(req, res){
 
 router.route('/submitaddr').post(function(req, res){
 	let addr =req.body.addr
-	console.log(addr)
 	return res.redirect('/analyze/'+addr)
 	
 	

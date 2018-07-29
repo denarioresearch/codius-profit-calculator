@@ -5,6 +5,9 @@ let data =[]
 let addr=''
 $().ready(function(){
 	addr = window.location.href.split('analyze/')[1]
+	if(addr.includes('#')){
+		addr=addr.split('#')[0]
+	}
 	if(addr){
 		document.getElementById('addr').value=addr
 	
@@ -37,24 +40,6 @@ $().ready(function(){
 	
 })
 
-// $("#submit").on("click", function(event){
-// 	    event.preventDefault();
-// 		event.stopPropagation();
-// 		$.ajax({
-// 			url : "/submitaddr",
-// 			type: "POST",
-// 			contentType: "application/json",
-// 			data: JSON.stringify({addr: $("#addr").val()}),
-			
-// 		}).done(function(result){
-		
-		
-// 		}).fail(function(err){
-// 			console.log(err);
-// 		})
-	
-	
-// })
 
 function analyze(){
 	let days = constructProfitDates()
