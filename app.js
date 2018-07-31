@@ -14,6 +14,17 @@ mongoose.connect(config.dburl, {
   useNewUrlParser: true
 });
 
+let db  =mongoose.connection;
+
+
+db.once('open',function(){
+	console.log('Openned db connection');
+});
+
+db.on('error', function(err){
+	console.log(err);
+})
+
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

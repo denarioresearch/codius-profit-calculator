@@ -1,5 +1,6 @@
 const server='wss://s2.ripple.com:443'
 const validator = require('wallet-address-validator');
+const analytics =require('../analytics')
 const express  = require('express');
 const router = express.Router();
 
@@ -47,6 +48,8 @@ router.route('/loaddata').get((req, res)=>{
 	if(validator.validate(addr,'XRP')){
 		api.connect().then(() => {
 		  api.getTransactions(addr, {minLedgerVersion: 38988009}).then((data)=>{
+
+		  	analytics.saveAddr(addr)
 		  	
 			res.json(data)
 		  })
