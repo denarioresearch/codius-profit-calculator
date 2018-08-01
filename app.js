@@ -1,12 +1,14 @@
-const express  = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const path = require('path');
-const cfenv = require("cfenv");
+const express  = require('express')
+const mongoose = require('mongoose')
+const bodyParser = require('body-parser')
+const path = require('path')
+const cfenv = require("cfenv")
 const config = require('./config')
 
 const session = require('express-session');
-const MongoStore = require('connect-mongo')(session);
+const MongoStore = require('connect-mongo')(session)
+const schedule = require('node-schedule')
+const analytics =require('./analytics')
 
 const app = express();
 
@@ -54,3 +56,8 @@ app.listen(appEnv.port, function() {
   console.log("server starting on " + appEnv.url);
   console.log("server running on " + appEnv.port);
 });
+
+schedule.scheduleJob('0 0 * * *', (fireDate)=>{
+	console.log('Prepare rating was supposed to run at ' + fireDate + ', but actually ran at ' + new Date())
+	analytics.prepareTopAccountsRating()
+})
