@@ -54,36 +54,45 @@ module.exports = {
 		
 		let rating ={}
 		Addr.find({},(err, addresses)=>{
-			for(address of addresses){
-				let addr = address.addr
+			let numOfCalls = addresses.length
+			
+			for(i=0;i<addresses.length;i++){
+				let addr = addresses[i].addr
 				rating[addr] =0
-				this.pullTransactions(addr, (data)=>{
-					for (elem of data){
-						if(elem.type ==='paymentChannelClaim' && 
-							elem.outcome.result ==='tesSUCCESS' && 
-							elem.outcome.balanceChanges[addr]){
+				setTimeout(()=>{
+					this.pullTransactions(addr, (data)=>{
+						for (elem of data){
+							if(elem.type ==='paymentChannelClaim' && 
+								elem.outcome.result ==='tesSUCCESS' && 
+								elem.outcome.balanceChanges[addr]){
 
-							for(tx of elem.outcome.balanceChanges[addr]){
-								if(tx['currency'] === 'XRP' &&  parseFloat(tx['value']) <9){
-									rating[addr] +=parseFloat(tx['value'])
+								for(tx of elem.outcome.balanceChanges[addr]){
+									if(tx['currency'] === 'XRP' &&  parseFloat(tx['value']) <9){
+										rating[addr] +=parseFloat(tx['value'])
+									}
 								}
 							}
 						}
-					}
-				})
+						numOfCalls--
+						
+						if(numOfCalls <=0){
+							let newRating = new Rating({
+								timestamp: Math.round(Date.now()/1000),
+								rating: rating
+							}).save((err)=>{
+								if(err){
+									console.log(err)
+								}
+							})
+						}
+						
+
+					})
+
+				},(i+1)*5000)
 				
 			}
 		})
-		setTimeout(()=>{
-			let newRating = new Rating({
-				timestamp: Math.round(Date.now()/1000),
-				rating: rating
-			}).save((err)=>{
-				if(err){
-					console.log(err)
-				}
-			})
-		},300000)
 	}
 
 }
