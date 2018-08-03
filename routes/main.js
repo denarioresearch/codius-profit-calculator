@@ -2,6 +2,7 @@
 const validator = require('wallet-address-validator');
 const analytics =require('../analytics')
 const express  = require('express');
+const config = require('../config')
 const router = express.Router();
 
 
@@ -31,7 +32,7 @@ router.route('/analyze/:addr').get((req, res)=>{
 
 router.route('/loaddata').get((req, res)=>{
 	let addr = req.query.addr
-	if(validator.validate(addr,'XRP')){
+	if(validator.validate(addr,'XRP') && !config.ilpConnectors.includes(addr)){
 		analytics.pullTransactions(addr,(data)=>{
 			analytics.saveAddr(addr)
 
