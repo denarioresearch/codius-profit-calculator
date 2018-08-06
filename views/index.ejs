@@ -22,76 +22,68 @@
 				<button id="submit" type="submit" class="btn btn-primary">Submit</button> 
 			</form>
 		</div>
-		<div class="container mb-4  mt-4 d-flex justify-content-center">
-			<div style="display:none;" id="loaderDiv">
-				Loading data...
-				
-					<img src="/images/ajax-loader.gif" alt="Loading">
-				
-			</div>
-		</div>
+		
 		<div class="d-flex justify-content-center">
 			<a amount="0.75" size="275" to="denarioresearch" network="reddit" href="https://www.xrptipbot.com" target="_blank"></a>
 			<script async src="https://www.xrptipbot.com/static/donate/tipper.js" charset="utf-8"></script>
 		</div>
 		<hr>
-		<div class= "container mt-4">
-			<h2 align="center">Total profit <span id="total-profit">0</span> XRP</h2>
+		<div class="container">
+			<h2 class="d-flex justify-content-center">Top accounts profit</h2>
+			<div class="row">
+				
+				<div class="col-sm">
+					<h4 class="d-flex justify-content-center">Total</h4>
+					<table class="table table-bordered">
+						<caption>Based on Codius profit calculator users' data</caption>
+						<thead class="thead-light">
+							<tr>
+								<th >#</th>
+								<th >Profit, XRP</th>
+							</tr>
+							
+						</thead>
+						<tbody id="total-body">
+						</tbody>
+					</table>
+				</div>
+				<div class="col-sm">
+					<h4 class="d-flex justify-content-center">30 days</h4>
+					<table class="table table-bordered">
+						<caption>Based on Codius profit calculator users' data</caption>
+						<thead class="thead-light">
+							<tr>
+								<th >#</th>
+								<th >Profit, XRP</th>
+							</tr>
+							
+						</thead>
+						<tbody id="month-body">
+						</tbody>
+					</table>
+				</div>
+				<div class="col-sm">
+					<h4 class="d-flex justify-content-center">7 days</h4>
+					<table class="table table-bordered">
+						<caption>Based on Codius profit calculator users' data</caption>
+						<thead class="thead-light">
+							<tr>
+								<th >#</th>
+								<th >Profit, XRP</th>
+							</tr>
+							
+						</thead>
+						<tbody id="week-body">
+						</tbody>
+					</table>
+				</div>
+			</div>
 		</div>
-		<div class= "container mt-4">
-			<h3>30 days profit chart</h3>
-			<div id="profitByDate_chart"></div>
-		</div>
-		<div class= "container mt-4">
-			<h3>30 days profit by channel</h3>
-			<ul id="chart-channels-list" class="list-inline text-center"></ul>
-			<div id="profitByCahnnelAndDate_chart" ></div>
-		</div>
-		<div class= "container mt-4">
-			<h3>Largest and smallest tx today by channel</h3>
-			<ul id="table-channels-list" class="list-inline text-center"></ul>
-			<table class="table table-bordered">
-				<caption id="tx-caption"></caption>
-				<thead class="thead-light">
-					<tr>
-						<th colspan="2" scope="colgroup">Largest tx</th>
-						<th colspan="2" scope="colgroup">Smallest tx</th>
-					</tr>
-					<tr>
-						<th scope="col">Time</th>
-						<th scope="col">Value</th>
-						<th scope="col">Time</th>
-						<th scope="col">Value</th>
-					</tr>
-				</thead>
-				<tbody id="tx-body">
-				</tbody>
-			</table>
-		</div>
-		<div class= "container mt-4">
-			
-			<h3>Total profit by channel</h3>
-			<table class="table table-bordered">
-				<thead class="thead-light">
-					<tr>
-						<th scope="col">Channel</th>
-						<th scope="col">Created</th>
-						<th scope="col">Profit</th>
-						<th scope="col">Largest tx</th>
-						<th scope="col">Smallest tx</th>
-					</tr>
-				</thead>
-				<tbody id="channels">
-				</tbody>
-			</table>
-			
-		</div>
-		
 		</main>
 		<footer class="footer">
 			<% include ./partials/footer.ejs %>
 	    </footer>
-		<script src='/js/analyzer.js'></script>		
+		<script src='/js/ratings.js'></script>	
 	</body>
 	
 </html>

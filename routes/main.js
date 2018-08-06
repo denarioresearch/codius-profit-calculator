@@ -23,7 +23,7 @@ router.route('/submitaddr').post(function(req, res){
 router.route('/analyze/:addr').get((req, res)=>{
 	
 	if(validator.validate(req.params.addr,'XRP')){
-		res.render('index')
+		res.render('report')
 	}else{
 		console.log('invalid address ',req.params.addr)
 		res.send('invalid XRP address')
@@ -43,6 +43,14 @@ router.route('/loaddata').get((req, res)=>{
 		console.log('invalid address ',addr)
 		res.json(null)
 	}
+	
+})
+
+router.route('/loadrating').get((req, res)=>{
+	analytics.getTopAccounts((data)=>{
+		res.json(data)
+	})
+	
 	
 })
 
