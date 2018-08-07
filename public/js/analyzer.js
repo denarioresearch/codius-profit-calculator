@@ -29,7 +29,10 @@ $().ready(function(){
 			}
 		}).done(function(result){
 			if(result){
-				data =result	
+				data =result.profitData	
+				if(result.rating){
+					setRating(result.rating)
+				}
 				analyze()
 			}
 				
@@ -174,7 +177,10 @@ function populateProfitByChannelAndDateChart(channel, profitByChannelAndDate){
 	for(key in profitByChannelAndDate){
 		chartData.push([key.slice(5), profitByChannelAndDate[key].profit])
 	}
-	chartData.push(['Date', 'channel# ...'+channel.slice(-5)])
+	if(channel){
+		chartData.push(['Date', 'channel# ...'+channel.slice(-5)])
+	}
+	
 	chartData =chartData.reverse()
 	google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(()=>{
@@ -248,7 +254,10 @@ function prepareLargestAndSmallextTxTable(channel){
 function populateLargestAndSmallextTxTable(channel, topLargestTx,topSmallestTx ){
 	let tableBody = document.getElementById('tx-body')
 	$("#tx-body tr").remove(); 
-	document.getElementById('tx-caption').innerHTML='channel# ...'+channel.slice(-5)
+	if(channel){
+		document.getElementById('tx-caption').innerHTML='channel# ...'+channel.slice(-5)
+	}
+	
 	if(topLargestTx.length>0 && topSmallestTx.length>0){
 		for(i=0;i<topLargestTx.length;i++){
 			var tr=document.createElement("tr")
@@ -351,4 +360,15 @@ function populateChannelsTable(profitByChannel){
 
     }
 
+}
+
+function setRating(rating){
+	$("#personal-rating").show()
+	document.getElementById('total-rating').innerHTML = rating.totalRating
+	document.getElementById('month-rating').innerHTML = rating.monthRating
+	document.getElementById('week-rating').innerHTML = rating.weekRating
+
+	document.getElementById('total-perf').innerHTML = rating.totalPerf
+	document.getElementById('month-perf').innerHTML = rating.monthPerf
+	document.getElementById('week-perf').innerHTML = rating.weekPerf
 }

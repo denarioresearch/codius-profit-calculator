@@ -38,6 +38,48 @@
 		<div class= "container mt-4">
 			<h2 align="center">Total profit <span id="total-profit">0</span> XRP</h2>
 		</div>
+		<div class="container  mt-4" id="personal-rating" style="display:none;">
+			<h3 >Your personal rating</h3>
+			<div class="row">
+				
+				<div class="col-sm">
+					<div class="card">
+						<div class="card-body">
+							<h5 class="card-title">Total</h5>
+							<h1 class="display-3 card-text text-center" id="total-rating"></h1>
+						</div>
+						<div class="card-footer text-muted">
+							Better than <span id="total-perf"></span>% of users
+						</div>
+					</div>
+					      
+				</div>
+				<div class="col-sm">
+					<div class="card">
+						<div class="card-body">
+							<h5 class="card-title">30 days</h5>
+							<h1 class="display-3 card-text text-center" id="month-rating"></h1>
+						</div>
+						<div class="card-footer text-muted">
+							Better than <span id="month-perf"></span>% of users
+						</div>
+					</div>
+					
+				</div>
+				<div class="col-sm">
+					<div class="card">
+						<div class="card-body">
+							<h5 class="card-title">7 days</h5>
+							<h1 class="display-3 card-text text-center" id="week-rating"></h1>
+						</div>
+						<div class="card-footer text-muted">
+							Better than <span id="week-perf"></span>% of users
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
 		<div class= "container mt-4">
 			<h3>30 days profit chart</h3>
 			<div id="profitByDate_chart"></div>

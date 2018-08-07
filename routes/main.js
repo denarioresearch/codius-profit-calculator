@@ -35,8 +35,11 @@ router.route('/loaddata').get((req, res)=>{
 	if(validator.validate(addr,'XRP') && !config.ilpConnectors.includes(addr)){
 		analytics.pullTransactions(addr,(data)=>{
 			analytics.saveAddr(addr)
-
-			res.json(data)
+			analytics.getPersonalRating(addr,(rating)=>{
+				res.json({profitData:data,
+						rating:rating})
+			})
+			
 		})
 
 	}else{

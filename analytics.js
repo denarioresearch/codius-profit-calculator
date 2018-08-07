@@ -131,6 +131,33 @@ module.exports = {
 				return callback(rating)
 			}
 		})
+	},
+
+	getPersonalRating: function(addr, callback){
+		Rating.findOne({}, {}, { sort: { 'timestamp' : -1 } }, (err, data)=>{
+			if(err){
+				console.log(err)
+				return callback(null)
+			}else{
+				let result=null
+				for(elem in data.rating){
+					
+					if(elem ===addr){
+						let accounts = Object.keys(data.rating).length
+						
+						 
+						result = {totalRating:data.rating[elem].total.rating,
+								totalPerf:Math.round((1-data.rating[elem].total.rating/accounts)*100),
+								monthRating:data.rating[elem].month.rating,
+								monthPerf:Math.round((1-data.rating[elem].month.rating/accounts)*100),
+								weekRating:data.rating[elem].week.rating,
+								weekPerf:Math.round((1-data.rating[elem].week.rating/accounts)*100)}
+					}
+				}
+
+				return callback(result)
+			}
+		})
 	}
 
 }
