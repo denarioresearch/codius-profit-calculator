@@ -157,6 +157,7 @@ function prepareProfitByChannelAndDateChart(channel){
 			elem.outcome.result ==='tesSUCCESS' && 
 			elem.outcome.balanceChanges[addr] &&
 			daysArray.includes(elem.outcome.timestamp.split('T')[0]) &&
+			elem.outcome.channelChanges &&
 			elem.outcome.channelChanges.channelId === channel){
 
 			for(tx of elem.outcome.balanceChanges[addr]){
