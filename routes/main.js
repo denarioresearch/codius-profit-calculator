@@ -49,8 +49,8 @@ router.route('/loaddata').get((req, res)=>{
 	
 })
 
-router.route('/loadrating').get((req, res)=>{
-	analytics.getTopAccounts((data)=>{
+router.route('/loadaccounts').get((req, res)=>{
+	analytics.getAccountsData((data)=>{
 		res.json(data)
 	})
 	

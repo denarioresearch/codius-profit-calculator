@@ -105,30 +105,18 @@ module.exports = {
 		})
 	},
 
-	getTopAccounts: function(callback){
+	getAccountsData: function(callback){
 		Rating.findOne({}, {}, { sort: { 'timestamp' : -1 } }, (err, data)=>{
 			if(err){
 				console.log(err)
 				return callback(null)
 			}else{
-				
-				let rating = {total:[], month:[], week:[]}
-				for(i=1;i<11;i++){
-					for (elem in data.rating){
-						
-						if(data.rating[elem].total.rating === i){
-							rating.total.push(data.rating[elem].total.profit.toFixed(6))
-						}
-						if(data.rating[elem].month.rating === i){
-							rating.month.push(data.rating[elem].month.profit.toFixed(6))
-						}
-						if(data.rating[elem].week.rating === i){
-							rating.week.push(data.rating[elem].week.profit.toFixed(6))
-						}
-					}
+				let result=[]
+				for (elem in data.rating){
+					result.push(data.rating[elem])
 				}
+				return callback(result)
 				
-				return callback(rating)
 			}
 		})
 	},
